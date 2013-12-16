@@ -1,0 +1,26 @@
+{
+  "name": "angular-complete",
+  "description": "Angular autocomplete directive",
+  "version": "0.1.0",
+  "homepage": "https://github.com/firstandthird/angular-complete",
+  "license": "MIT",
+  "copyright": "First + Third",
+  "main": "dist/angular-complete.js",
+  "dependencies": {
+    "jquery": "~1.10.0",
+    "angular": "~1.0.7"
+  },
+  "devDependencies": {
+    "assert": "*",
+    "blanket": "*"
+  },
+  "ignore": [
+    "test",
+    "example",
+    "grunt",
+    "lib",
+    "Gruntfile.js",
+    "package.json",
+    "grunt"
+  ]
+}
