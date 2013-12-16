@@ -3,12 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <title>angular-complete example</title>
+    <script src="../bower_components/jquery/jquery.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/fidel/dist/fidel.js"></script>
+    <script src="../bower_components/complete/dist/fidel.complete.js"></script>
     <script src="../dist/angular-complete.js"></script>
     <script src="app.js"></script>
   </head>
   <body>
     <div ng-controller="MainController">
+      <input type="text" complete ng-model="car" autofocus />
     </div>
   </body>
 </html>
