@@ -9,10 +9,28 @@
     <script src="../bower_components/complete/dist/fidel.complete.js"></script>
     <script src="../dist/angular-complete.js"></script>
     <script src="app.js"></script>
+    <link rel="stylesheet" href="../bower_components/complete/lib/complete.css"/>
   </head>
   <body>
     <div ng-controller="MainController">
-      <input type="text" complete ng-model="car" autofocus />
+      <h2>Basic</h2>
+      <input
+        type="text"
+        autofocus
+        complete
+        ng-model="car"
+        source="carsPlain"
+      />
+      <h2>Advanced</h2>
+      <input
+        type="text"
+        autofocus
+        complete
+        ng-model="car"
+        query="searchCars(query, callback)"
+        format-suggestion="formatCar(suggestion, value)"
+        format-value="formatSelectedCar(value)"
+      />
     </div>
   </body>
 </html>

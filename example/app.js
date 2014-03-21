@@ -51,31 +51,42 @@ var MainController = function($scope) {
     }
   ];
 
-  $scope.query = function(query, callback){
-    var queryLower = query.toLowerCase(), self = this;
+  $scope.carsPlain = [];
+  cars.forEach(function(car) {
+    $scope.carsPlain.push(car.name);
+  });
+
+  $scope.searchCars = function(query, callback){
+    console.log('search', arguments);
+    var queryLower = query.toLowerCase();
 
     var suggestions = [];
 
     for(var car in cars) {
       car = cars[car];
 
-      if(car.name.toLowerCase().indexOf(queryLower) !== -1) suggestions.push(car);
+      if (car.name.toLowerCase().indexOf(queryLower) !== -1) {
+        suggestions.push(car);
+      }
     }
 
     callback.apply(this,[suggestions]);
   };
 
-  $scope.formatSuggestion = function(suggestion, value) {
+  $scope.formatCar = function(suggestion, value) {
     var pattern = '(' + value + ')';
-    return suggestion.name.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>');
+    return '* ' + suggestion.name.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + ' *'
   };
 
-  $scope.format = function(value) {
-    if(!value) return value;
+  $scope.formatSelectedCar = function(value) {
+    if (!value) {
+      return value;
+    }
     return value.name;
   };
 
-  $scope.$on('complete:selected', function(e, val) {
-    console.log('Changed to: ' + val.name, val);
+  $scope.$watch('car', function(val, old) {
+    console.log('Car changed', val);
   });
+
 };
