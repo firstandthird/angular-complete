@@ -1,45 +1,52 @@
-
 /*!
  * angular-complete - Angular autocomplete directive
- * v0.1.0
+ * v0.2.0
  * https://github.com/firstandthird/angular-complete
- * copyright First + Third 2013
+ * copyright First + Third 2014
  * MIT License
 */
 (function(){
   angular.module('ftComplete', [])
     .directive('complete', ['$parse', function($parse) {
       return {
+        scope: {
+          selectedItem: '=',
+          source: '=',
+          sourceKey: '=',
+          query: '&',
+          formatSuggestion: '&'
+        },
         link: function(scope, el, attrs) {
           var options = $parse(attrs.complete)() || {};
 
-          var format = scope.format || function(value) {
-            return value;
-          };
-
           options.source = [];
-          if(typeof scope.query === 'function') {
-            options.query = scope.query;
+          options.sourceKey = scope.sourceKey;
+
+          if (attrs.query) {
+            options.query = function(query, callback) {
+              return scope.query({ query: query, callback: callback });
+            };
           } else {
-            options.source = scope.query;
+            options.source = scope.source;
           }
 
-          if(typeof scope.formatSuggestion === 'function') {
-            options.formatSuggestion = scope.formatSuggestion;
+          if (attrs.formatSuggestion) {
+            options.formatSuggestion = function(suggestion, value) {
+              return scope.formatSuggestion({ suggestion: suggestion, value: value });
+            };
           }
 
-          options.format = format;
+          var completeEl = $(el).complete(options);
 
-          scope.complete = $(el).complete(options);
-
-          scope.complete.on('select', function(event, value){
-            if(!value) return;
+          completeEl.on('select', function(event, value){
+            if (!value) {
+              return;
+            }
 
             scope.$apply(function(){
-              scope[attrs.ngModel] = format(value);
+              scope.selectedItem = value;
             });
 
-            scope.$emit('complete:selected', value);
           });
         }
       };
