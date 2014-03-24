@@ -1,6 +1,6 @@
 /*!
  * angular-complete - Angular autocomplete directive
- * v0.2.0
+ * v0.2.1
  * https://github.com/firstandthird/angular-complete
  * copyright First + Third 2014
  * MIT License
@@ -31151,7 +31151,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 })(jQuery);
 /*!
  * complete - Autocomplete Plugin
- * v0.5.1
+ * v0.5.2
  * http://github.com/jgallen23/complete
  * copyright Greg Allen 2014
  * MIT License
@@ -31208,15 +31208,11 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
       this.visible = false;
       this.currentValue = this.el.value;
       this.selectedIndex = -1;
-      this._checkUseObject();
-    },
-    _checkUseObject : function () {
-      this._useObject = (this.sourceKey);
     },
     _getSuggestion : function (suggestion) {
       var value;
 
-      if (this._useObject && suggestion && suggestion[this.sourceKey]){
+      if (!!this.sourceKey && suggestion && suggestion[this.sourceKey]){
         value = suggestion[this.sourceKey];
       }
       else {
@@ -31411,7 +31407,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
       this.selectedIndex = -1;
     },
     selectSuggestion : function(event){
-      if (event.type === "keydown" && this.allowOthers){
+      if (event.type === "keydown" && this.allowOthers && this.selectedIndex < 0){
         $(this.el).val(this.currentValue);
         this.emit('select',this.currentValue);
         this.hide();
@@ -31434,7 +31430,6 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
     },
     setSource: function(source){
       this.source = source;
-      this._checkUseObject();
     }
   });
 })(jQuery);
@@ -31447,6 +31442,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
           selectedItem: '=',
           source: '=',
           sourceKey: '=',
+          allowOthers: '=',
           query: '&',
           formatSuggestion: '&'
         },
@@ -31455,6 +31451,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 
           options.source = [];
           options.sourceKey = scope.sourceKey;
+          options.allowOthers = scope.allowOthers;
 
           if (attrs.query) {
             options.query = function(query, callback) {

@@ -1,6 +1,6 @@
 /*!
  * angular-complete - Angular autocomplete directive
- * v0.2.0
+ * v0.2.1
  * https://github.com/firstandthird/angular-complete
  * copyright First + Third 2014
  * MIT License
@@ -13,6 +13,7 @@
           selectedItem: '=',
           source: '=',
           sourceKey: '=',
+          allowOthers: '=',
           query: '&',
           formatSuggestion: '&'
         },
@@ -21,6 +22,7 @@
 
           options.source = [];
           options.sourceKey = scope.sourceKey;
+          options.allowOthers = scope.allowOthers;
 
           if (attrs.query) {
             options.query = function(query, callback) {
