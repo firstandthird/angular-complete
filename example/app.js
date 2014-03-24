@@ -78,13 +78,6 @@ var MainController = function($scope) {
     return '* ' + suggestion.name.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + ' *'
   };
 
-  $scope.formatSelectedCar = function(value) {
-    if (!value) {
-      return value;
-    }
-    return value.name;
-  };
-
   $scope.$watch('car', function(val, old) {
     console.log('Car changed', val);
   });
