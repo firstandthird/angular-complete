@@ -1,6 +1,6 @@
 /*!
  * angular-complete - Angular autocomplete directive
- * v0.2.1
+ * v0.3.0
  * https://github.com/firstandthird/angular-complete
  * copyright First + Third 2014
  * MIT License
@@ -40,7 +40,7 @@
 
           var completeEl = $(el).complete(options);
 
-          completeEl.on('select', function(event, value){
+          completeEl.on('complete:select', function(event, value){
             if (!value) {
               return;
             }

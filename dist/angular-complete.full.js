@@ -1,6 +1,6 @@
 /*!
  * angular-complete - Angular autocomplete directive
- * v0.2.1
+ * v0.3.0
  * https://github.com/firstandthird/angular-complete
  * copyright First + Third 2014
  * MIT License
@@ -31151,7 +31151,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 })(jQuery);
 /*!
  * complete - Autocomplete Plugin
- * v0.5.2
+ * v0.5.4
  * http://github.com/jgallen23/complete
  * copyright Greg Allen 2014
  * MIT License
@@ -31193,7 +31193,8 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
     events : {
       'keydown' : 'keyPressed',
       'keyup' : 'keyUp',
-      'blur' : 'onBlur'
+      'blur' : 'onBlur',
+      'focus' : 'onFocus'
     },
     keyCode : {
       UP : 38,
@@ -31208,6 +31209,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
       this.visible = false;
       this.currentValue = this.el.value;
       this.selectedIndex = -1;
+      this.suggestions = [];
     },
     _getSuggestion : function (suggestion) {
       var value;
@@ -31251,6 +31253,13 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 
       this.bindEventsList();
     },
+    updatePosition: function() {
+      var $el = $(this.el);
+      $(this.listHolder).css({
+        "top" : $el.position().top + $el.outerHeight(),
+        "left" : $el.position().left,
+      });
+    },
     bindEventsList : function(){
       var $list = $(this.list),
           self = this;
@@ -31290,11 +31299,14 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
         case this.keyCode.DOWN :
           return;
       }
-
+      this._generatedSuggestions = false;
       this.debounce(this.valueChanged);
     },
     onBlur : function(){
       $(document).on('click.complete', this.proxy(this.onClickWA,this));
+    },
+    onFocus: function() {
+      this.updatePosition();
     },
     onClickWA : function(event){
       if ($(event.target).closest('.' + this.listClass).length === 0) {
@@ -31315,6 +31327,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
           this.hide();
         }
       }
+      this._generatedSuggestions = true;
     },
     _getSuggestions : function(query){
       var queryLower = query.toLowerCase(), self = this;
@@ -31375,6 +31388,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
               className = self.suggestionClass,
               html = '';
 
+          self.suggestions = [];
           self.suggestions = suggestions;
 
           $.each(suggestions, function(i, suggestion){
@@ -31407,9 +31421,23 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
       this.selectedIndex = -1;
     },
     selectSuggestion : function(event){
+      // If the user hits enter before the debounce finishes, we force a generation of the suggestions
+      if(!this._generatedSuggestions){
+        this.valueChanged();
+      }
+
       if (event.type === "keydown" && this.allowOthers && this.selectedIndex < 0){
-        $(this.el).val(this.currentValue);
-        this.emit('select',this.currentValue);
+        var firstSuggestion = this._getSuggestion(this.suggestions[0]);
+
+        if (this.suggestions.length === 1 && firstSuggestion === this.currentValue){
+          this.currentValue = this.suggestions[0];
+          $(this.el).val(this._getSuggestion(this.currentValue));
+        }
+        else {
+          $(this.el).val(this.currentValue);
+        }
+
+        this.emit('complete:select',this.currentValue);
         this.hide();
       }
       else {
@@ -31420,7 +31448,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
         if (this.suggestions[this.selectedIndex]){
           $(this.el).val(this._getSuggestion(this.suggestions[this.selectedIndex]));
           this.currentValue = this.suggestions[this.selectedIndex];
-          this.emit('select',this.currentValue);
+          this.emit('complete:select',this.currentValue);
           this.hide();
         }
       }
@@ -31469,7 +31497,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 
           var completeEl = $(el).complete(options);
 
-          completeEl.on('select', function(event, value){
+          completeEl.on('complete:select', function(event, value){
             if (!value) {
               return;
             }
