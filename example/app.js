@@ -79,7 +79,11 @@ var MainController = function($scope) {
   };
 
   $scope.$watch('car', function(val, old) {
-    console.log('Car changed', val);
+    if (val !== old) {
+      console.log('Car changed', val);
+    }
   });
 
 };
+
+angular.module('example-app').controller('MainController', MainController);
